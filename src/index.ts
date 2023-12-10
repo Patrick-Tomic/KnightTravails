@@ -1,4 +1,4 @@
 import Game from './knight'
 
-const game = new Game([1, 2], [3, 3])
-game.nextarr()
+const game = new Game([2, 0], [5, 3])
+game.findEnd()
