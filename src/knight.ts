@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/restrict-plus-operands */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Node } from './node'
 export default class Game {
-  starting: number[]
+  node: Node
   ending: number[]
-  board: number[][]
-  positions: number[][]
   moves: number
+  positions: number[][]
   constructor (start: number[], end: number[]) {
-    this.starting = start
+    this.node = new Node(start)
     this.ending = end
-    this.board = []
     this.positions = [
       [-2, 1],
       [-2, -1],
@@ -24,31 +23,8 @@ export default class Game {
     this.moves = 1
   }
 
-  findHome (numberMoves: number = 1): void {
-    this.board.push(this.starting)
-    const next = this.findPossiblePositions(this.board[this.board.length - 1])
-    let count = 0
-    while (count < next.length) {
-      if (next[count][0] === this.ending[0] && next[count][1] === this.ending[1]) {
-        console.log('Made it to end in ' + numberMoves + ' moves')
-        return
-      } else {
-        this.findHome(numberMoves++)
-        console.log(next[count])
-      }
-      count++
-    }
-  }
-
-  findPossiblePositions (position: number[]) {
-    const nextSteps: number[][] = []
-    for (let i = 0; i < 8; i++) {
-      const x = position[0] + this.positions[i][0]
-      for (let y = 1; y < 2; y++) {
-        const z = position[1] + this.positions[i][y]
-        nextSteps.push([x, z])
-      }
-    }
-    return nextSteps
+  nextarr () {
+    const newArr = this.positions.map((position) => [position[0] + this.node.position[0], position[1] + this.node.position[1]])
+    console.log(newArr)
   }
 }
