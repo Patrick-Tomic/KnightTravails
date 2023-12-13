@@ -30,15 +30,18 @@ export default class Game {
   }
 
   nextarr (Position: number[]) {
-    const newArr: number[][] = this.positions.map((position) => [position[0] + Position[0], position[1] + Position[1]])
+    let newArr: number[][] = this.positions.map((position) => [position[0] + Position[0], position[1] + Position[1]])
     while (newArr.length) {
       if (newArr[0][0] === this.ending[0] && newArr[0][1] === this.ending[1]) {
-        console.log('FOUND IT!!!')
+        this.moves++
+        this.queue = this.queue.slice(0, this.moves)
         this.found = true
-        this.queue.push(newArr[0])
-        console.log(this.queue.length)
         return
       }
+      newArr.shift()
+    }
+    newArr = this.positions.map((position) => [position[0] + Position[0], position[1] + Position[1]])
+    while (newArr.length) {
       if (newArr[0][0] >= 0 && newArr[0][0] <= 7 && newArr[0][1] >= 0 && newArr[0][1] <= 7) {
         this.queue.push(newArr[0])
         newArr.shift()
@@ -47,17 +50,48 @@ export default class Game {
       }
     }
     this.moves++
-    // eslint-disable-next-line array-callback-return
   }
 
   findEnd () {
+    this.nextarr(this.queue[this.moves])
     if (this.found) {
       return
     }
-    console.log(this.queue[0] + '=' + this.ending)
-    this.nextarr(this.queue[0])
-    this.queue.shift()
     this.findEnd()
-    console.log(this.queue)
+  }
+
+  organize (root = this.node, arr: number[][] = [], temp: number[][] = []) {
+    const node = root
+    if (arr.length) {
+      if (temp.length === 0) {
+        temp.push(arr[0])
+      }
+      if (this.queue[0][0] === arr[0][0] + 2 || this.queue[0][0] === arr[0][0] - 2 || this.queue[0][0] === arr[0][0] - 1 || this.queue[0][0] === arr[0][0] + 1) {
+        if (this.queue[0][1] === arr[0][1] + 2 || this.queue[0][1] === arr[0][1] - 2 || this.queue[0][1] === arr[0][1] - 1 || this.queue[0][1] === arr[0][1] + 1) {
+          temp.push(this.queue[0])
+          this.queue.shift()
+          this.organize(node, arr, temp)
+        }
+      } else {
+        arr.shift()
+        console.log(temp)
+        console.log(this.queue)
+        temp = []
+      }
+    }
+    if (node.nextNode == null) {
+      while (this.queue.length) {
+        if (node.position === this.queue[0]) {
+          this.queue.shift()
+        } else if (this.queue[0][0] === node.position[0] + 2 || this.queue[0][0] === node.position[0] - 2 || this.queue[0][0] === node.position[0] + 1 || this.queue[0][0] === node.position[0] - 1) {
+          if (this.queue[0][1] === node.position[1] + 2 || this.queue[0][1] === node.position[1] - 2 || this.queue[0][1] === node.position[1] + 1 || this.queue[0][1] === node.position[1] - 1) {
+            arr.push(this.queue[0])
+            this.queue.shift()
+          }
+        } else {
+          this.organize(node, arr)
+        }
+      }
+    }
   }
 }
