@@ -3,6 +3,6 @@ import Game from './knight'
 
 const game = new Game([2, 0], [6, 3])
 game.findEnd()
-console.log(game.queue)
-game.organize()
-console.log(game.queue)
+console.log(game.visited)
+console.log(game.finalRoute)
+game.findRoute()
